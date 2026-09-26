@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useSessionInput } from '../../shared/useSessionInput';
+import { parseJson } from '../json/json';
+import { alignJson } from './jsonDiff';
+import { JsonDiffView } from './JsonDiffView';
 import { diffText, type TextDiffRow } from './textDiff';
 
 type Mode = 'text' | 'json';
@@ -22,6 +25,18 @@ export function DiffPage() {
   const [jsonRight, setJsonRight, clearJsonRight, jsonRightWarning] = useSessionInput('diff:json:right');
   const rows = useMemo(() => diffText(textLeft, textRight), [textLeft, textRight]);
   const differenceCount = rows.filter((row) => row.kind !== 'same').length;
+  const jsonResult = useMemo(() => {
+    const parsedLeft = parseJson(jsonLeft);
+    const parsedRight = parseJson(jsonRight);
+    if (!parsedLeft.ok || !parsedRight.ok) {
+      return {
+        ok: false as const,
+        leftError: parsedLeft.ok ? null : parsedLeft.message,
+        rightError: parsedRight.ok ? null : parsedRight.message,
+      };
+    }
+    return alignJson(parsedLeft.value, parsedRight.value);
+  }, [jsonLeft, jsonRight]);
 
   const isText = mode === 'text';
   const left = isText ? textLeft : jsonLeft;
@@ -101,8 +116,20 @@ export function DiffPage() {
             </div>
           </div>
         </section>
+      ) : jsonResult.ok ? (
+        <JsonDiffView rows={jsonResult.rows} />
       ) : (
-        <div className="empty-state">JSON 结构对比将在下一阶段接入</div>
+        <section className="json-errors" aria-live="polite">
+          {('leftError' in jsonResult && jsonResult.leftError) && (
+            <p className="status error">左侧 JSON：{jsonResult.leftError}</p>
+          )}
+          {('rightError' in jsonResult && jsonResult.rightError) && (
+            <p className="status error">右侧 JSON：{jsonResult.rightError}</p>
+          )}
+          {('message' in jsonResult) && (
+            <p className="status error">路径 {jsonResult.path || '/'}：{jsonResult.message}</p>
+          )}
+        </section>
       )}
     </section>
   );

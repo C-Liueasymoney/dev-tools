@@ -164,7 +164,7 @@ const classified = parts.map(part => ({
 
 **Interfaces:** Produce `alignJson(left: unknown, right: unknown, keyFields?: Record<string, string>): JsonDiffResult`, where `JsonDiffResult` is `{ ok: true; rows: JsonDiffRow[] } | { ok: false; path: string; message: string }`. Each row is `{ path: string; depth: number; left: unknown | Missing; right: unknown | Missing; kind: 'same' | 'added' | 'removed' | 'changed' | 'type-changed' }`. Define `export const MISSING = Symbol('missing')` and `export type Missing = typeof MISSING`, so JSON `null` is not mistaken for absent. Paths use JSON Pointer escaping (`~` to `~0`, `/` to `~1`); root path is `''`.
 
-- [ ] **Step 1: Write failing alignment tests.** Cover reordered fields, nested repeated names, missing fields, and type changes:
+- [x] **Step 1: Write failing alignment tests.** Cover reordered fields, nested repeated names, missing fields, and type changes:
 
 ```ts
 const reordered = alignJson({ a: 1, b: 2 }, { b: 2, a: 1 });
@@ -176,8 +176,8 @@ const removed = alignJson({ a: null }, {});
 expect(removed.ok && removed.rows.find(row => row.path === '/a')?.kind).toBe('removed');
 ```
 
-- [ ] **Step 2: Run red.** `npm test -- --run src/tools/diff/jsonDiff.test.ts`; expect missing export.
-- [ ] **Step 3: Implement row model.** Recursively visit object keys in left order, appending right-only keys; use own-property checks, not truthiness, to distinguish missing from `null`. Compare primitives by type and value. Emit container rows for nested objects/arrays and descendant rows with one shared order. Render each row as one CSS grid row with left and right cells; filter rows for “only differences” while retaining enough ancestor rows to identify context. Never render input as HTML.
+- [x] **Step 2: Run red.** `npm test -- --run src/tools/diff/jsonDiff.test.ts`; expect missing export.
+- [x] **Step 3: Implement row model.** Recursively visit object keys in left order, appending right-only keys; use own-property checks, not truthiness, to distinguish missing from `null`. Compare primitives by type and value. Emit container rows for nested objects/arrays and descendant rows with one shared order. Render each row as one CSS grid row with left and right cells; filter rows for “only differences” while retaining enough ancestor rows to identify context. Never render input as HTML.
 
 ```ts
 const keys = [
@@ -190,7 +190,7 @@ for (const key of keys) {
   visit(childLeft, childRight, `${path}/${key.replaceAll('~', '~0').replaceAll('/', '~1')}`, depth + 1);
 }
 ```
-- [ ] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: align JSON diff fields`.
+- [x] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: align JSON diff fields`.
 
 ### Task 5: JSON array identifier matching
 

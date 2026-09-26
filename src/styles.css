@@ -159,6 +159,18 @@ nav { display: grid; gap: 0.55rem; }
 .row-removed pre:first-child { background: #ffebe7; }
 .row-changed pre:first-child { background: #ffebe7; }
 .row-changed pre:last-child { background: #e5f6e7; }
+.toggle-label { display: inline-flex; align-items: center; gap: 0.45rem; color: #647061; font-size: 0.82rem; }
+.json-diff-grid { min-width: 920px; }
+.json-diff-head { display: inline-block; width: calc((100% - 210px) / 2); padding: 0.65rem 1rem; color: #7b8778; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.json-diff-head:first-child { width: 210px; }
+.json-diff-row { display: grid; grid-template-columns: 210px minmax(0, 1fr) minmax(0, 1fr); border-top: 1px solid #edf0e9; }
+.json-diff-row code, .json-diff-row pre { min-height: 2.2rem; margin: 0; padding-block: 0.5rem; padding-right: 1rem; overflow: hidden; border-right: 1px solid #e1e5dc; white-space: pre; font: 0.8rem/1.5 ui-monospace, monospace; }
+.json-diff-row pre { padding-left: 1rem; }
+.json-diff-row pre:last-child { border-right: 0; }
+.row-added pre:last-child, .row-added code { background: #e5f6e7; }
+.row-removed pre:first-of-type, .row-removed code { background: #ffebe7; }
+.row-type-changed pre, .row-type-changed code { background: #fff2d7; }
+.json-errors { margin-top: 1rem; overflow: hidden; border: 1px solid #efc4bc; border-radius: 0.8rem; }
 
 @media (max-width: 760px) {
   .split-editors { grid-template-columns: 1fr; }
