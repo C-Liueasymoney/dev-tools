@@ -254,7 +254,7 @@ const valid = date.getFullYear() === year && date.getMonth() === month - 1
 
 **Interfaces:** No new exported API. README is the handoff: required runtime from installed Vite version, `npm ci`, `npm run dev`, `npm test -- --run`, `npm run typecheck`, `npm run build`, and serving `dist/` on a static host.
 
-- [ ] **Step 1: Write the failing interaction tests.** Exercise navigation, input persistence, and JSON field reorder with Testing Library:
+- [x] **Step 1: Write the failing interaction tests.** Exercise navigation, input persistence, and JSON field reorder with Testing Library:
 
 ```tsx
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -271,9 +271,9 @@ test('reordered JSON fields have no difference', () => {
 });
 ```
 
-- [ ] **Step 2: Run red and fix only observed gaps.** Run `npm test -- --run src/App.test.tsx`; make navigation labels and result state match the test. Add a storage-failure test by mocking `sessionStorage.setItem` to throw and asserting the page remains usable with a warning.
-- [ ] **Step 3: Manual layout and privacy check.** At desktop and 375 px viewport, compare reordered/nested JSON and confirm each left/right field stays on one row with whole-result horizontal scroll. Paste `<img src=x onerror=alert(1)>` and confirm it displays as text. Check the browser network panel while processing input; no request contains tool input.
-- [ ] **Step 4: Full verification and commit.** Run `npm test -- --run`, `npm run typecheck`, `npm run build`; serve `dist/` locally and open all three tools. Document exact commands and limitations in `README.md`. Commit as `docs: add run and deployment guide` (include any integration fixes).
+- [x] **Step 2: Run red and fix only observed gaps.** Run `npm test -- --run src/App.test.tsx`; make navigation labels and result state match the test. Add a storage-failure test by mocking `sessionStorage.setItem` to throw and asserting the page remains usable with a warning.
+- [x] **Step 3: Manual layout and privacy check.** At desktop and 375 px viewport, compare reordered/nested JSON and confirm each left/right field stays on one row with whole-result horizontal scroll. Paste `<img src=x onerror=alert(1)>` and confirm it displays as text. Check the browser network panel while processing input; no request contains tool input.
+- [x] **Step 4: Full verification and commit.** Run `npm test -- --run`, `npm run typecheck`, `npm run build`; serve `dist/` locally and open all three tools. Document exact commands and limitations in `README.md`. Commit as `docs: add run and deployment guide` (include any integration fixes).
 
 ## Execution Handoff
 
