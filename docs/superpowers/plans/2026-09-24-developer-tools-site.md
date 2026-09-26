@@ -227,7 +227,7 @@ function idKey(item: unknown, field: string): string | null {
 
 **Interfaces:** Produce `fromTimestamp(input: string, unit: 'seconds' | 'milliseconds'): TimeResult<Date>`, `fromLocalDateTime(input: string): TimeResult<{ seconds: number; milliseconds: number }>`, `currentTimestamp(now = new Date()): { seconds: number; milliseconds: number }`; `TimeResult<T>` is `{ ok: true; value: T } | { ok: false; message: string }`.
 
-- [ ] **Step 1: Write failing time tests.** Include unit distinction, current time, impossible date, and range:
+- [x] **Step 1: Write failing time tests.** Include unit distinction, current time, impossible date, and range:
 
 ```ts
 expect(fromTimestamp('1000', 'seconds')).toEqual({ ok: true, value: new Date(1_000_000) });
@@ -237,8 +237,8 @@ expect(fromTimestamp('999999999999999999', 'milliseconds').ok).toBe(false);
 expect(fromLocalDateTime('2026-02-30T12:00').ok).toBe(false);
 ```
 
-- [ ] **Step 2: Run red.** `npm test -- --run src/tools/time/time.test.ts`; expect missing exports.
-- [ ] **Step 3: Implement and render.** Require an integer timestamp and explicit unit, reject `Date` values whose `getTime()` is `NaN`, parse local date/time components and compare round-tripped components to reject normalized impossible dates. Display the browser local time with its zone label and UTC separately. “使用当前时间” calls `currentTimestamp(new Date())`, fills the input, and shows both units.
+- [x] **Step 2: Run red.** `npm test -- --run src/tools/time/time.test.ts`; expect missing exports.
+- [x] **Step 3: Implement and render.** Require an integer timestamp and explicit unit, reject `Date` values whose `getTime()` is `NaN`, parse local date/time components and compare round-tripped components to reject normalized impossible dates. Display the browser local time with its zone label and UTC separately. “使用当前时间” calls `currentTimestamp(new Date())`, fills the input, and shows both units.
 
 ```ts
 const date = new Date(year, month - 1, day, hour, minute, second, millisecond);
@@ -246,7 +246,7 @@ const valid = date.getFullYear() === year && date.getMonth() === month - 1
   && date.getDate() === day && date.getHours() === hour
   && date.getMinutes() === minute && date.getSeconds() === second;
 ```
-- [ ] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: add timestamp converter`.
+- [x] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: add timestamp converter`.
 
 ### Task 7: Integration, documentation, and final verification
 
