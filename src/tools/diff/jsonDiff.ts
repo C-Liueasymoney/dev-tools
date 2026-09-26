@@ -87,6 +87,11 @@ export function alignJson(
       const row: JsonDiffRow = { path, depth, left: leftValue, right: rightValue, kind };
 
       if (Array.isArray(present)) {
+        const identifierField = keyFields[path];
+        if (identifierField) {
+          const side = leftType === 'missing' ? '右侧' : '左侧';
+          if (!indexByIdentifier(present, identifierField, path, side)) return [];
+        }
         const descendants = present.flatMap((item, index) => visit(
           leftType === 'missing' ? MISSING : item,
           rightType === 'missing' ? MISSING : item,

@@ -47,7 +47,7 @@ export function JsonPage() {
   };
 
   const copyOutput = async () => {
-    if (!result?.output) return;
+    if (result?.output === undefined) return;
     try {
       await navigator.clipboard.writeText(result.output);
       setCopyMessage('已复制');

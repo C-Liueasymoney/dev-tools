@@ -5,34 +5,31 @@ export function useSessionInput(
   initial = '',
 ): [string, (next: string) => void, () => void, string | null] {
   const storageKey = `tool:${key}`;
-  const [value, setValue] = useState(() => {
+  const [state, setState] = useState<{ value: string; warning: string | null }>(() => {
     try {
-      return sessionStorage.getItem(storageKey) ?? initial;
+      return { value: sessionStorage.getItem(storageKey) ?? initial, warning: null };
     } catch {
-      return initial;
+      return { value: initial, warning: '本次输入无法在刷新后恢复' };
     }
   });
-  const [warning, setWarning] = useState<string | null>(null);
 
   const update = (next: string) => {
-    setValue(next);
     try {
       sessionStorage.setItem(storageKey, next);
-      setWarning(null);
+      setState({ value: next, warning: null });
     } catch {
-      setWarning('本次输入无法在刷新后恢复');
+      setState({ value: next, warning: '本次输入无法在刷新后恢复' });
     }
   };
 
   const clear = () => {
-    setValue('');
     try {
       sessionStorage.removeItem(storageKey);
-      setWarning(null);
+      setState({ value: '', warning: null });
     } catch {
-      setWarning('本次输入无法在刷新后恢复');
+      setState({ value: '', warning: '本次输入无法在刷新后恢复' });
     }
   };
 
-  return [value, update, clear, warning];
+  return [state.value, update, clear, state.warning];
 }

@@ -52,3 +52,15 @@ test('keeps the page usable and warns when session storage cannot write', () => 
   expect(input).toHaveValue('{"still":"usable"}');
   expect(screen.getByText('本次输入无法在刷新后恢复')).toBeInTheDocument();
 });
+
+test('copies an empty string result after unescaping', () => {
+  const writeText = vi.fn().mockResolvedValue(undefined);
+  vi.stubGlobal('navigator', { clipboard: { writeText } });
+  render(<App />);
+
+  fireEvent.change(screen.getByLabelText('原始输入'), { target: { value: '""' } });
+  fireEvent.click(screen.getByRole('button', { name: '去转义' }));
+  fireEvent.click(screen.getByRole('button', { name: '复制结果' }));
+
+  expect(writeText).toHaveBeenCalledWith('');
+});

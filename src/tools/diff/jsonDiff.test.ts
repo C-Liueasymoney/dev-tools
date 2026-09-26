@@ -68,4 +68,12 @@ describe('JSON structural alignment', () => {
       { '/items': 'id' },
     )).toMatchObject({ ok: false, path: '/items' });
   });
+
+  test('validates identifiers when a configured array exists on only one side', () => {
+    expect(alignJson(
+      {},
+      { items: [{ value: 'missing id' }] },
+      { '/items': 'id' },
+    )).toMatchObject({ ok: false, path: '/items' });
+  });
 });
