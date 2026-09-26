@@ -19,6 +19,9 @@ function visibleText(value: string | null, kind: TextDiffRow['kind']) {
 
 export function DiffPage() {
   const [mode, setMode] = useState<Mode>('text');
+  const [useIdentifier, setUseIdentifier] = useState(false);
+  const [arrayPath, setArrayPath] = useState('/items');
+  const [identifierField, setIdentifierField] = useState('id');
   const [textLeft, setTextLeft, clearTextLeft, textLeftWarning] = useSessionInput('diff:text:left');
   const [textRight, setTextRight, clearTextRight, textRightWarning] = useSessionInput('diff:text:right');
   const [jsonLeft, setJsonLeft, clearJsonLeft, jsonLeftWarning] = useSessionInput('diff:json:left');
@@ -35,8 +38,11 @@ export function DiffPage() {
         rightError: parsedRight.ok ? null : parsedRight.message,
       };
     }
-    return alignJson(parsedLeft.value, parsedRight.value);
-  }, [jsonLeft, jsonRight]);
+    const keyFields = useIdentifier && arrayPath && identifierField
+      ? { [arrayPath]: identifierField }
+      : undefined;
+    return alignJson(parsedLeft.value, parsedRight.value, keyFields);
+  }, [arrayPath, identifierField, jsonLeft, jsonRight, useIdentifier]);
 
   const isText = mode === 'text';
   const left = isText ? textLeft : jsonLeft;
@@ -96,6 +102,41 @@ export function DiffPage() {
       {warnings.filter(Boolean).map((warning, index) => (
         <p className="inline-warning" key={`${warning}-${index}`} role="status">{warning}</p>
       ))}
+
+      {!isText && (
+        <div className="array-match-config">
+          <label className="toggle-label">
+            <input
+              checked={useIdentifier}
+              onChange={(event) => setUseIdentifier(event.target.checked)}
+              type="checkbox"
+            />
+            按标识字段匹配对象数组
+          </label>
+          {useIdentifier && (
+            <div className="config-fields">
+              <label>
+                数组路径
+                <input
+                  aria-label="数组路径"
+                  onChange={(event) => setArrayPath(event.target.value)}
+                  placeholder="/items"
+                  value={arrayPath}
+                />
+              </label>
+              <label>
+                标识字段
+                <input
+                  aria-label="标识字段"
+                  onChange={(event) => setIdentifierField(event.target.value)}
+                  placeholder="id"
+                  value={identifierField}
+                />
+              </label>
+            </div>
+          )}
+        </div>
+      )}
 
       {isText ? (
         <section className="diff-result" aria-label="文本对比结果">

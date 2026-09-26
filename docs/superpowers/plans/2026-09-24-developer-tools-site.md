@@ -198,7 +198,7 @@ for (const key of keys) {
 
 **Interfaces:** Keep Task 4's `alignJson` and `JsonDiffResult` interfaces. `keyFields` maps array JSON Pointer paths to a direct child identifier field, e.g. `{ '/items': 'id' }`.
 
-- [ ] **Step 1: Write failing identifier tests.** Include reorder, right-only item, typed IDs, and duplicates:
+- [x] **Step 1: Write failing identifier tests.** Include reorder, right-only item, typed IDs, and duplicates:
 
 ```ts
 expect(alignJson({ items: [{ id: 1, v: 'a' }] }, { items: [{ id: 1, v: 'a' }] }, { '/items': 'id' }).ok).toBe(true);
@@ -208,8 +208,8 @@ expect(typedIds.ok && typedIds.rows.some(row => row.kind === 'added')).toBe(true
 expect(alignJson({ items: [{ id: 1 }, { id: 1 }] }, { items: [] }, { '/items': 'id' }).ok).toBe(false);
 ```
 
-- [ ] **Step 2: Run red.** `npm test -- --run src/tools/diff/jsonDiff.test.ts`; expect the new cases to fail.
-- [ ] **Step 3: Implement matching and UI configuration.** For configured arrays, accept only string/number IDs, serialize the type with the value for map keys, reject missing or repeated IDs on either side, then walk left IDs followed by right-only IDs. For unconfigured arrays, keep positional matching. Add a path-and-field selector in JSON mode, and show a specific error instead of stale rows on failure.
+- [x] **Step 2: Run red.** `npm test -- --run src/tools/diff/jsonDiff.test.ts`; expect the new cases to fail.
+- [x] **Step 3: Implement matching and UI configuration.** For configured arrays, accept only string/number IDs, serialize the type with the value for map keys, reject missing or repeated IDs on either side, then walk left IDs followed by right-only IDs. For unconfigured arrays, keep positional matching. Add a path-and-field selector in JSON mode, and show a specific error instead of stale rows on failure.
 
 ```ts
 function idKey(item: unknown, field: string): string | null {
@@ -219,7 +219,7 @@ function idKey(item: unknown, field: string): string | null {
   return `${typeof value}:${String(value)}`;
 }
 ```
-- [ ] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: match JSON arrays by identifier`.
+- [x] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: match JSON arrays by identifier`.
 
 ### Task 6: Timestamp conversion
 

@@ -29,4 +29,43 @@ describe('JSON structural alignment', () => {
     const result = alignJson({ 'a/b~c': 1 }, { 'a/b~c': 2 });
     expect(result.ok && result.rows.find((row) => row.path === '/a~1b~0c')?.kind).toBe('changed');
   });
+
+  test('matches configured array objects by typed identifier', () => {
+    const reordered = alignJson(
+      { items: [{ id: 1, value: 'a' }, { id: 2, value: 'b' }] },
+      { items: [{ id: 2, value: 'b' }, { id: 1, value: 'a' }] },
+      { '/items': 'id' },
+    );
+    expect(reordered.ok && reordered.rows.every((row) => row.kind === 'same')).toBe(true);
+
+    const typedIds = alignJson(
+      { items: [{ id: 1 }] },
+      { items: [{ id: '1' }] },
+      { '/items': 'id' },
+    );
+    expect(typedIds.ok && typedIds.rows.some((row) => row.kind === 'removed')).toBe(true);
+    expect(typedIds.ok && typedIds.rows.some((row) => row.kind === 'added')).toBe(true);
+  });
+
+  test('appends right-only identifiers after left-side order', () => {
+    const result = alignJson(
+      { items: [{ id: 2 }] },
+      { items: [{ id: 3 }, { id: 2 }] },
+      { '/items': 'id' },
+    );
+    expect(result.ok && result.rows.find((row) => row.path === '/items/1')?.kind).toBe('added');
+  });
+
+  test('rejects missing, non-scalar, and duplicate identifiers', () => {
+    expect(alignJson(
+      { items: [{ id: 1 }, { id: 1 }] },
+      { items: [] },
+      { '/items': 'id' },
+    )).toMatchObject({ ok: false, path: '/items' });
+    expect(alignJson(
+      { items: [{}] },
+      { items: [] },
+      { '/items': 'id' },
+    )).toMatchObject({ ok: false, path: '/items' });
+  });
 });

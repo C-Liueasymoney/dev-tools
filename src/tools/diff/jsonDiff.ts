@@ -28,11 +28,50 @@ function own(object: Record<string, unknown>, key: string) {
   return Object.hasOwn(object, key) ? object[key] : MISSING;
 }
 
+function idKey(item: unknown, field: string): string | null {
+  if (item === null || typeof item !== 'object' || Array.isArray(item)) return null;
+  const value = (item as Record<string, unknown>)[field];
+  if (typeof value !== 'string' && typeof value !== 'number') return null;
+  return `${typeof value}:${String(value)}`;
+}
+
 export function alignJson(
   left: unknown,
   right: unknown,
-  _keyFields: Record<string, string> = {},
+  keyFields: Record<string, string> = {},
 ): JsonDiffResult {
+  let failure: Extract<JsonDiffResult, { ok: false }> | null = null;
+
+  const indexByIdentifier = (
+    items: unknown[],
+    field: string,
+    path: string,
+    side: '左侧' | '右侧',
+  ) => {
+    const indexed = new Map<string, unknown>();
+    for (let index = 0; index < items.length; index += 1) {
+      const key = idKey(items[index], field);
+      if (key === null) {
+        failure = {
+          ok: false,
+          path,
+          message: `${side}数组第 ${index + 1} 项缺少字符串或数字标识字段 “${field}”`,
+        };
+        return null;
+      }
+      if (indexed.has(key)) {
+        failure = {
+          ok: false,
+          path,
+          message: `${side}数组的标识字段 “${field}” 存在重复值`,
+        };
+        return null;
+      }
+      indexed.set(key, items[index]);
+    }
+    return indexed;
+  };
+
   const visit = (
     leftValue: unknown | Missing,
     rightValue: unknown | Missing,
@@ -93,13 +132,32 @@ export function alignJson(
     if (leftType === 'array') {
       const leftArray = leftValue as unknown[];
       const rightArray = rightValue as unknown[];
-      const length = Math.max(leftArray.length, rightArray.length);
-      const descendants = Array.from({ length }, (_, index) => visit(
-        index < leftArray.length ? leftArray[index] : MISSING,
-        index < rightArray.length ? rightArray[index] : MISSING,
-        `${path}/${index}`,
-        depth + 1,
-      )).flat();
+      const identifierField = keyFields[path];
+      let descendants: JsonDiffRow[];
+
+      if (identifierField) {
+        const leftItems = indexByIdentifier(leftArray, identifierField, path, '左侧');
+        const rightItems = indexByIdentifier(rightArray, identifierField, path, '右侧');
+        if (!leftItems || !rightItems) return [];
+        const identifiers = [
+          ...leftItems.keys(),
+          ...Array.from(rightItems.keys()).filter((key) => !leftItems.has(key)),
+        ];
+        descendants = identifiers.flatMap((key, index) => visit(
+          leftItems.has(key) ? leftItems.get(key) : MISSING,
+          rightItems.has(key) ? rightItems.get(key) : MISSING,
+          `${path}/${index}`,
+          depth + 1,
+        ));
+      } else {
+        const length = Math.max(leftArray.length, rightArray.length);
+        descendants = Array.from({ length }, (_, index) => visit(
+          index < leftArray.length ? leftArray[index] : MISSING,
+          index < rightArray.length ? rightArray[index] : MISSING,
+          `${path}/${index}`,
+          depth + 1,
+        )).flat();
+      }
       const kind = descendants.every((row) => row.kind === 'same') ? 'same' : 'changed';
       return [{ path, depth, left: leftValue, right: rightValue, kind }, ...descendants];
     }
@@ -113,5 +171,6 @@ export function alignJson(
     }];
   };
 
-  return { ok: true, rows: visit(left, right, '', 0) };
+  const rows = visit(left, right, '', 0);
+  return failure ?? { ok: true, rows };
 }
