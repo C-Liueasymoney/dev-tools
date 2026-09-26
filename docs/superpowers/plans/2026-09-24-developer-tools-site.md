@@ -102,7 +102,7 @@ export function useSessionInput(key: string, initial = ''):
 
 **Interfaces:** Produce `parseJson(input: string): JsonResult<unknown>`, `formatJson(input: string): JsonResult<string>`, `minifyJson(input: string): JsonResult<string>`, `escapeJsonString(input: string): string`, and `unescapeJsonString(input: string): JsonResult<string>`. `JsonResult<T>` is `{ ok: true; value: T } | { ok: false; message: string; offset?: number }`.
 
-- [ ] **Step 1: Write failing transformation tests.** Include these assertions in `json.test.ts`:
+- [x] **Step 1: Write failing transformation tests.** Include these assertions in `json.test.ts`:
 
 ```ts
 expect(formatJson('{"x":1}')).toEqual({ ok: true, value: '{\n  "x": 1\n}' });
@@ -113,8 +113,8 @@ expect(unescapeJsonString('{"x":1}').ok).toBe(false);
 expect(parseJson('{broken').ok).toBe(false);
 ```
 
-- [ ] **Step 2: Run red.** `npm test -- --run src/tools/json/json.test.ts`; expect missing exports.
-- [ ] **Step 3: Implement pure functions and page.** Use `JSON.parse` and `JSON.stringify(value, null, 2)` / `JSON.stringify(value)`. `escapeJsonString` uses `JSON.stringify(input)`. `unescapeJsonString` parses and checks `typeof value === 'string'`. Derive offset from native syntax errors where available; otherwise show a reason without inventing a position. Keep source input separate from output. Page controls: validate, format, minify, escape, unescape, copy output, clear input.
+- [x] **Step 2: Run red.** `npm test -- --run src/tools/json/json.test.ts`; expect missing exports.
+- [x] **Step 3: Implement pure functions and page.** Use `JSON.parse` and `JSON.stringify(value, null, 2)` / `JSON.stringify(value)`. `escapeJsonString` uses `JSON.stringify(input)`. `unescapeJsonString` parses and checks `typeof value === 'string'`. Derive offset from native syntax errors where available; otherwise show a reason without inventing a position. Keep source input separate from output. Page controls: validate, format, minify, escape, unescape, copy output, clear input.
 
 ```ts
 export const escapeJsonString = (input: string): string => JSON.stringify(input);
@@ -129,7 +129,7 @@ export function unescapeJsonString(input: string): JsonResult<string> {
   }
 }
 ```
-- [ ] **Step 4: Verify and commit.** Run the focused test, `npm run typecheck`, `npm run build`; commit as `feat: add JSON processing tool`.
+- [x] **Step 4: Verify and commit.** Run the focused test, `npm run typecheck`, `npm run build`; commit as `feat: add JSON processing tool`.
 
 ### Task 3: Plain text Diff
 
