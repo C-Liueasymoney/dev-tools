@@ -47,7 +47,7 @@
 
 **Interfaces:** Produces `useSessionInput(key: string, initial?: string): [string, (next: string) => void, () => void, string | null]`; later pages consume it. Produces `App` with navigation keys `json`, `diff`, `time`.
 
-- [ ] **Step 1: Write the failing session test.** Create `src/shared/useSessionInput.test.ts`:
+- [x] **Step 1: Write the failing session test.** Create `src/shared/useSessionInput.test.ts`:
 
 ```ts
 import { renderHook, act } from '@testing-library/react';
@@ -66,9 +66,9 @@ test('restores input in the same tab and clears only its own key', () => {
 });
 ```
 
-- [ ] **Step 2: Scaffold and verify red.** Create the Vite React TypeScript files, install `react`, `react-dom`, `diff` and dev dependencies `typescript`, `vite`, `@vitejs/plugin-react`, `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, `@types/react`, `@types/react-dom`, `@types/node`; add scripts `dev`, `build`, `test`, `typecheck`. Set Vitest environment to `jsdom`. Run `npm test -- --run src/shared/useSessionInput.test.ts`; expect a missing-module failure.
+- [x] **Step 2: Scaffold and verify red.** Create the Vite React TypeScript files, install `react`, `react-dom`, `diff` and dev dependencies `typescript`, `vite`, `@vitejs/plugin-react`, `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, `@types/react`, `@types/react-dom`, `@types/node`; add scripts `dev`, `build`, `test`, `typecheck`. Set Vitest environment to `jsdom`. Run `npm test -- --run src/shared/useSessionInput.test.ts`; expect a missing-module failure.
 
-- [ ] **Step 3: Implement the hook and shell.** Use a lazy state initializer to read `sessionStorage`, a setter that updates state even if storage throws, and a clear function that removes only `tool:${key}`. Return a warning string on storage failure. Build a simple `App` that switches the three page components without changing URL parameters. Mount it from `src/main.tsx`. Start with empty page components inside their future files; replace each in its task. The hook implementation is:
+- [x] **Step 3: Implement the hook and shell.** Use a lazy state initializer to read `sessionStorage`, a setter that updates state even if storage throws, and a clear function that removes only `tool:${key}`. Return a warning string on storage failure. Build a simple `App` that switches the three page components without changing URL parameters. Mount it from `src/main.tsx`. Start with empty page components inside their future files; replace each in its task. The hook implementation is:
 
 ```ts
 import { useState } from 'react';
@@ -94,7 +94,7 @@ export function useSessionInput(key: string, initial = ''):
 }
 ```
 
-- [ ] **Step 4: Verify and commit.** Run `npm test -- --run src/shared/useSessionInput.test.ts`, `npm run typecheck`, and `npm run build`; all pass. Commit the shell, lockfile, and hook as `feat: scaffold static tool shell`.
+- [x] **Step 4: Verify and commit.** Run `npm test -- --run src/shared/useSessionInput.test.ts`, `npm run typecheck`, and `npm run build`; all pass. Commit the shell, lockfile, and hook as `feat: scaffold static tool shell`.
 
 ### Task 2: JSON validation, formatting, minification, and string escaping
 
