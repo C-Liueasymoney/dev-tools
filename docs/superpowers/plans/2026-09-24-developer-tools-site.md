@@ -137,7 +137,7 @@ export function unescapeJsonString(input: string): JsonResult<string> {
 
 **Interfaces:** Produce `diffText(left: string, right: string): TextDiffRow[]`, where `TextDiffRow` is `{ left: string | null; right: string | null; kind: 'same' | 'added' | 'removed' | 'changed' }`. `DiffPage` owns separate session keys for text-left, text-right, json-left, and json-right.
 
-- [ ] **Step 1: Write failing row tests.** Include an insertion, deletion, and a CRLF/final-newline case:
+- [x] **Step 1: Write failing row tests.** Include an insertion, deletion, and a CRLF/final-newline case:
 
 ```ts
 expect(diffText('a\nb\n', 'a\nc\n').some(row => row.kind === 'changed')).toBe(true);
@@ -145,8 +145,8 @@ expect(diffText('a\n', 'a').some(row => row.kind !== 'same')).toBe(true);
 expect(diffText('a\r\nb', 'a\nb').some(row => row.kind !== 'same')).toBe(true);
 ```
 
-- [ ] **Step 2: Run red.** `npm test -- --run src/tools/diff/textDiff.test.ts`; expect missing export.
-- [ ] **Step 3: Implement.** Use `diffLines(left, right, { ignoreWhitespace: false, newlineIsToken: true })` from `diff`. Expand change hunks to rows, pairing adjacent removed and added lines as `changed`; preserve raw line endings in the row values. Show two synchronized columns and visible whitespace/newline markers on changed rows so line-ending-only differences are observable.
+- [x] **Step 2: Run red.** `npm test -- --run src/tools/diff/textDiff.test.ts`; expect missing export.
+- [x] **Step 3: Implement.** Use `diffLines(left, right, { ignoreWhitespace: false, newlineIsToken: true })` from `diff`. Expand change hunks to rows, pairing adjacent removed and added lines as `changed`; preserve raw line endings in the row values. Show two synchronized columns and visible whitespace/newline markers on changed rows so line-ending-only differences are observable.
 
 ```ts
 import { diffLines } from 'diff';
@@ -156,7 +156,7 @@ const classified = parts.map(part => ({
   kind: part.added ? 'added' : part.removed ? 'removed' : 'same',
 }));
 ```
-- [ ] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: add text diff`.
+- [x] **Step 4: Verify and commit.** Run focused test, `npm run typecheck`, `npm run build`; commit as `feat: add text diff`.
 
 ### Task 4: JSON Diff alignment and two-column view
 
